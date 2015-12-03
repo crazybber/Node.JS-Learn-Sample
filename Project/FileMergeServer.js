@@ -26,36 +26,6 @@ function combineFiles(pathnames,callback){
 	}(0,pathnames.lenth));
 }
 
-var httpcallback = function(request,response){
-		//parser url
-		console.log('解析路径');
-		var urlinfo = parseURL(root,request.url);
-		console.log('解析路径，完成');
-		//combineFiles
-		combineFiles(urlinfo.pathnames,function(err,data){
-			if(err){
-				response.writeHead(404);
-				response.end(err.message);
-			}else{
-				response.writeHead(200,{
-					'Content-Type': urlInfo.mime
-				});
-				response.write(data);
-				response.end();		
-			}
-		} );		
-	};
-
-
-function main(argv){
-var config = JSON.parse(fs.readFileSync(argv[0],'utf-8')),
-	root = config.root||'.',
-	port = config.port||80;
-	console.log('starting launch Server on Port :%d',port);
-	http.createServer(httpcallback).listen(port);
-	console.log('launch Server success!! on Port :%d',port);	
-}
-
 
 // main function parse url
 function parseURL(root,url){
@@ -73,7 +43,38 @@ function parseURL(root,url){
 	return {
 		mime:MIME[path.extname(pathnames[0])]||'text/plain',
 		pathnames:pathnames
-	};
-	
+	};	
 }
+
+
+
+function main(argv){
+var config = JSON.parse(fs.readFileSync(argv[0],'utf-8')),
+	root = config.root||'.',
+	port = config.port||80;
+	console.log('starting launch Server on Port :%d',port);
+	http.createServer(function(request,response){
+		//parser url
+		console.log('parsing url,start');
+		var urlinfo = parseURL(root,request.url);
+		console.log('parsing url, over');
+		//combineFiles
+		combineFiles(urlinfo.pathnames,function(err,data){
+			if(err){
+				response.writeHead(404);
+				response.end(err.message);
+			}else{
+				response.writeHead(200,{
+					'Content-Type': urlInfo.mime
+				});
+				response.write(data);
+				response.end();		
+			}
+		} );		
+	}).listen(port);
+	console.log('launch Server success!! on Port :%d',port);	
+}
+
+
+
 main(process.argv.slice(2));
