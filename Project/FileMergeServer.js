@@ -28,9 +28,9 @@ function combineFiles(pathnames,callback){
 
 var httpcallback = function(request,response){
 		//parser url
-		console.log('22222222');
+		console.log('解析路径');
 		var urlinfo = parseURL(root,request.url);
-		console.log('3333333333333');
+		console.log('解析路径，完成');
 		//combineFiles
 		combineFiles(urlinfo.pathnames,function(err,data){
 			if(err){
