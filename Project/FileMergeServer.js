@@ -96,6 +96,8 @@ function parseURL(root,url){
 	
 	console.log('parts：%s',parts);
 	console.log('pathnames after map :%s',pathnames);
+	console.log('MINE EXT:%s',path.extname(pathnames[0]));
+	
 	return {
 		mime:MIME[path.extname(pathnames[0])]||'text/plain',
 		pathnames:pathnames
